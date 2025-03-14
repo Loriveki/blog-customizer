@@ -52,15 +52,16 @@ const App = () => {
 	return (
 		<main
 			className={clsx(styles.main)}
-			style={{
-				'--font-family': articleStyles.fontFamilyOption.value,
-				'--font-size': articleStyles.fontSizeOption.value,
-				'--font-color': articleStyles.fontColor.value,
-				'--container-width': articleStyles.contentWidth.value,
-				'--bg-color': articleStyles.backgroundColor.value,
-			} as CSSProperties}
+			style={
+				{
+					'--font-family': articleStyles.fontFamilyOption.value,
+					'--font-size': articleStyles.fontSizeOption.value,
+					'--font-color': articleStyles.fontColor.value,
+					'--container-width': articleStyles.contentWidth.value,
+					'--bg-color': articleStyles.backgroundColor.value,
+				} as CSSProperties
+			}
 			onClick={handleMainClick}>
-
 			<ArticleParamsForm
 				isOpen={isSidebarOpen}
 				onToggle={toggleSidebar}
