@@ -4,9 +4,8 @@ import { Text } from 'src/ui/text';
 import { RadioGroup } from 'src/ui/radio-group';
 import { Select } from '../../ui/select/Select';
 import { Separator } from '../../ui/separator/Separator';
-import React, { forwardRef, useState } from 'react';
+import React, { useState, useRef } from 'react';
 import clsx from 'clsx';
-
 import {
 	OptionType,
 	fontFamilyOptions,
@@ -16,22 +15,32 @@ import {
 	contentWidthArr,
 	defaultArticleState,
 } from '../../constants/articleProps';
-
 import styles from './ArticleParamsForm.module.scss';
+import { useOutsideClickClose } from '../../ui/select/hooks/useOutsideClickClose';
 
 // Тип для пропсов компонента
 type ArticleParamsFormProps = {
-	isOpen: boolean;
-	onToggle: () => void;
-	onApply: (settings: typeof defaultArticleState) => void; // Передаем новые настройки
-	onReset: () => void; // Сброс к дефолтным настройкам
+	setArticleStyles: React.Dispatch<
+		React.SetStateAction<{
+			fontFamilyOption: OptionType;
+			fontColor: OptionType;
+			backgroundColor: OptionType;
+			contentWidth: OptionType;
+			fontSizeOption: OptionType;
+		}>
+	>;
 };
 
 // Основной компонент формы с настройками статьи
-export const ArticleParamsForm = forwardRef<
-	HTMLDivElement,
-	ArticleParamsFormProps
->(({ isOpen, onToggle, onApply, onReset }, ref) => {
+export const ArticleParamsForm = ({
+	setArticleStyles,
+}: ArticleParamsFormProps) => {
+	// Состояние открытия/закрытия сайдбара
+	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+	// Реф для сайдбара
+	const sidebarRef = useRef<HTMLDivElement>(null);
+
 	// Состояния для каждой настройки
 	const [selectedSettings, setSelectedSettings] = useState({
 		fontFamilyOption: defaultArticleState.fontFamilyOption,
@@ -40,6 +49,16 @@ export const ArticleParamsForm = forwardRef<
 		backgroundColor: defaultArticleState.backgroundColor,
 		contentWidth: defaultArticleState.contentWidth,
 	});
+
+	// Функция для применения новых стилей
+	const handleApply = (newStyles: typeof defaultArticleState) => {
+		setArticleStyles(newStyles);
+	};
+
+	// Сброс настроек к значениям по умолчанию
+	const resetSettings = () => {
+		setArticleStyles(defaultArticleState); // Возвращаем дефолтные стили
+	};
 
 	// Обработчики изменения настроек
 	const handleChange = (key: string) => (selected: OptionType) => {
@@ -53,7 +72,7 @@ export const ArticleParamsForm = forwardRef<
 	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		// Применяем новые настройки
-		onApply(selectedSettings);
+		handleApply(selectedSettings);
 	};
 
 	// Сброс всех настроек к дефолтным
@@ -65,21 +84,32 @@ export const ArticleParamsForm = forwardRef<
 			backgroundColor: defaultArticleState.backgroundColor,
 			contentWidth: defaultArticleState.contentWidth,
 		});
-		onReset(); // Вызываем сброс в родительском компоненте
+		resetSettings(); // Вызываем сброс в родительском компоненте
 	};
 
-	ArticleParamsForm.displayName = 'ArticleParamsForm';
+	// Функция для переключения сайдбара
+	const toggleSidebar = () => {
+		setIsSidebarOpen((prev) => !prev);
+	};
+
+	// Используем хук для закрытия сайдбара по клику вне его
+	useOutsideClickClose({
+		isOpen: isSidebarOpen,
+		rootRef: sidebarRef,
+		onChange: setIsSidebarOpen,
+	});
 
 	return (
-		<div ref={ref}>
-			<ArrowButton isOpen={isOpen} onClick={onToggle} />
-			{isOpen && (
+		<>
+			<ArrowButton isOpen={isSidebarOpen} onClick={toggleSidebar} />
+			{
 				<aside
+					ref={sidebarRef}
 					className={clsx(styles.container, {
-						[styles.container_open]: isOpen,
+						[styles.container_open]: isSidebarOpen,
 					})}>
 					<form className={styles.form} onSubmit={handleSubmit}>
-						<Text as='h1' size={31} weight={800} uppercase>
+						<Text as='h2' size={31} weight={800} uppercase>
 							Задайте параметры
 						</Text>
 
@@ -138,7 +168,7 @@ export const ArticleParamsForm = forwardRef<
 						</div>
 					</form>
 				</aside>
-			)}
-		</div>
+			}
+		</>
 	);
-});
+};
