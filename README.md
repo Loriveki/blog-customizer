@@ -29,6 +29,11 @@ Blog Customizer — это приложение на React, которое по�
 
 [Макет проекта](https://www.figma.com/file/FEeiiGLOsE7ktXbPpBxYoD/Custom-dropdown?type=design&node-id=0%3A1&mode=design&t=eXRJnWC6Xsuw0qR4-1)
 
+![Главная](https://github.com/user-attachments/assets/8e31dc39-26f4-4285-b9a6-2113b1a0d0ac)  
+
+![Форма](https://github.com/user-attachments/assets/4e3a0daa-258f-4939-8652-edfb0e649815)  
+
+![Применение параметров](https://github.com/user-attachments/assets/2c5fcdda-efee-446a-aed2-d64cd546fcfe)
 
 ## 📦 Структура проекта
 
